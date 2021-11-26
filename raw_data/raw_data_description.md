@@ -1,1 +1,1 @@
-<code>[**Исходно взятые данные можно найти на яндекс диске**](https://disk.yandex.ru/d/b2CHYLIbVLlRjA)</code>
+<code>[**Полные исходно взятые данные**](https://disk.yandex.ru/d/b2CHYLIbVLlRjA)</code>
