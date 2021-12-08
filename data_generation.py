@@ -2,8 +2,8 @@ import os
 from PIL import Image
 import numpy as np
 from random import randint, choice
-FALSE_IMAGES_COUNT = 5000
-TRUE_IMAGES_COUNT = 500
+FALSE_IMAGES_COUNT = 6000
+TRUE_IMAGES_COUNT = 6000
 
 
 def paste_symb(x, y, x1, y1, paper, im, rm=170, gm=170, bm=170):
@@ -51,13 +51,20 @@ def paste_matrix(rows, columns, x, y, paper):
     paste_symb(x + 45 * (columns - 1), y, x + 45 * (columns - 1) + delt_x,
                y + rows * 45, paper, im)
     os.chdir('..')
+    os.chdir(choice(["=", "add", "-", "mult", "div"]))
+    im = Image.open(choice(os.listdir()))
+    im = im.convert('RGB')
+    paste_symb(x + 45 * (columns - 1) + delt_x,
+               y + (rows // 2) * 45, x + 45 * (columns - 1) + delt_x + 35,  y + (rows // 2) * 45 + 35, paper, im)
+    os.chdir('..')
 
 
 def false_data_generation():
+    os.chdir('C:\\Users\\eugen\\OneDrive\\Рабочий стол\\ML-model-training\\data\\processed')
     if not os.path.isdir('dataset_false'):
         os.mkdir('dataset_false')
-    os.chdir('raw_data')
-    os.chdir('natural_images')
+    os.chdir('..')
+    os.chdir('raw\\natural_images')
     ways = np.array([])
     for i in os.listdir():
         os.chdir(i)
@@ -68,16 +75,19 @@ def false_data_generation():
     os.chdir('..')
     os.chdir('..')
     for i in range(min(FALSE_IMAGES_COUNT, len(ways))):
-        im = Image.open('raw_data\\natural_images\\' + ways[i])
+        im = Image.open('raw\\natural_images\\' + ways[i])
         out = im.resize((500, 500))
-        out.save('dataset_false\\im' + str(i) + '.png')
+        out.save('processed\\dataset_false\\im' + str(i) + '.png')
 
 
 def true_data_generation():
-    if not os.path.isdir('dataset_true'):
-        os.mkdir('dataset_true')
+    os.chdir('data')
     for i in range(TRUE_IMAGES_COUNT):
-        os.chdir('raw_data')
+        os.chdir('raw\\natural_images')
+        os.chdir(choice(os.listdir()))
+        background = Image.open(choice(os.listdir()))
+        os.chdir('..')
+        os.chdir('..')
         os.chdir('paper')
         paper = Image.open(choice(os.listdir()))
         paper = paper.convert('RGB')
@@ -86,7 +96,7 @@ def true_data_generation():
         px = paper_copy.load()
         os.chdir('..')
         rows = randint(1, 6)
-        columns = randint(1, 6)
+        columns = randint(2, 6)
         written = False
         for j in range(100, paper_copy.size[1] - 200, rows * 50 + 35):
             for g in range(100, paper_copy.size[0] - 200, columns * 70 + 35):
@@ -95,17 +105,23 @@ def true_data_generation():
                 except IndexError:
                     os.chdir('..')
                 except:
-                    os.chdir('C:\\Users\\eugen\\Downloads\\ML_model_training\\raw_data')
+                    os.chdir('C:\\Users\\eugen\\OneDrive\\Рабочий стол\\ML-model-training\\data')
                 else:
                     written = True
         if written:
+            left_shif = randint(0, 50)
+            right_shift = randint(0, 50)
+            top_shift = randint(0, 50)
+            bottom_shift = randint(0, 50)
             os.chdir('..')
-            os.chdir('dataset_true')
-            paper_copy = paper_copy.resize((500, 500))
-            paper_copy.save(str(i) + '.png')
+            os.chdir('C:\\Users\\eugen\\OneDrive\\Рабочий стол\\ML-model-training\\data\\processed\\dataset_true')
+            paper_copy = paper_copy.resize((500 - left_shif - right_shift, 500 - top_shift - bottom_shift))
+            background = background.resize((500, 500))
+            background.paste(paper_copy, (left_shif, top_shift))
+            background.save(str(i) + '.png')
+            os.chdir('..')
             os.chdir('..')
 
 
+#true_data_generation()
 false_data_generation()
-true_data_generation()
-
