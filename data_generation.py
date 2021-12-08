@@ -123,5 +123,5 @@ def true_data_generation():
             os.chdir('..')
 
 
-#true_data_generation()
+true_data_generation()
 false_data_generation()
